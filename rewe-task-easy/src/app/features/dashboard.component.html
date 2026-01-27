@@ -1,0 +1,17 @@
+<h2>Dashboard</h2>
+
+<div *ngFor="let task of tasks$ | async" class="task-card">
+  <div *ngIf="editTaskId !== task.id">
+    <h3>{{ task.title }}</h3>
+    <p>{{ task.description }}</p>
+    <p>Status: {{ task.status }}</p>
+    <button (click)="enableEdit(task)">Edit</button>
+  </div>
+
+  <div *ngIf="editTaskId === task.id">
+    <input [(ngModel)]="editedTitle" placeholder="Task title" />
+    <textarea [(ngModel)]="editedDescription" placeholder="Description"></textarea>
+    <button (click)="saveEdit(task)">Save</button>
+    <button (click)="cancelEdit()">Cancel</button>
+  </div>
+</div>
