@@ -12,6 +12,30 @@ export class TaskService {
 
     if (savedTasks) {
       this.tasksSubject.next(JSON.parse(savedTasks) as Task[]);
+    } else {
+        const demoTasks: Task[] = [
+      {
+        id: 1,
+        title: 'Setup project',
+        description: 'Create Angular project',
+        status: 'TO DO',
+      },
+      {
+        id: 2,
+        title: 'Login feature',
+        description: 'Implement auth',
+        status: 'IN PROGRESS',
+      },
+      {
+        id: 3,
+        title: 'Dashboard',
+        description: 'Show tasks',
+        status: 'DONE',
+      },
+    ];
+
+    localStorage.setItem('tasks', JSON.stringify(demoTasks));
+    this.tasksSubject.next(demoTasks);
     }
   }
 

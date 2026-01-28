@@ -1,17 +1,53 @@
-<h2>Dashboard</h2>
+<h2 class="page-title">Dashboard</h2>
 
-<div *ngFor="let task of tasks$ | async" class="task-card">
-  <div *ngIf="editTaskId !== task.id">
-    <h3>{{ task.title }}</h3>
-    <p>{{ task.description }}</p>
-    <p>Status: {{ task.status }}</p>
-    <button (click)="enableEdit(task)">Edit</button>
+<div class="new-task-form">
+  <h3>Add New Task</h3>
+  <input type="text" placeholder="Title" [(ngModel)]="newTaskTitle" />
+  <textarea placeholder="Description" [(ngModel)]="newTaskDescription"></textarea>
+  <select [(ngModel)]="newTaskStatus">
+    <option value="TO DO">To Do</option>
+    <option value="IN PROGRESS">In Progress</option>
+    <option value="DONE">Done</option>
+  </select>
+  <button (click)="addTask()">Add Task</button>
+</div>
+
+<div class="board">
+  <div class="column">
+    <h3>To do</h3>
+    <div *ngFor="let task of filterByStatus(tasks$ | async, 'TO DO')" class="card">
+      <ng-container *ngIf="editTaskId !== task.id; else editMode">
+        <h4>{{ task.title }}</h4>
+        <p class="desc">{{ task.description }}</p>
+        <button (click)="enableEdit(task)">Edit</button>
+        <button (click)="moveTask(task, 'IN PROGRESS')">→ In Progress</button>
+      </ng-container>
+
+      <ng-template #editMode>
+        <input [(ngModel)]="editedTitle" />
+        <textarea [(ngModel)]="editedDescription"></textarea>
+        <button (click)="saveEdit(task)">Save</button>
+        <button (click)="cancelEdit()">Cancel</button>
+      </ng-template>
+    </div>
   </div>
 
-  <div *ngIf="editTaskId === task.id">
-    <input [(ngModel)]="editedTitle" placeholder="Task title" />
-    <textarea [(ngModel)]="editedDescription" placeholder="Description"></textarea>
-    <button (click)="saveEdit(task)">Save</button>
-    <button (click)="cancelEdit()">Cancel</button>
+  <div class="column">
+    <h3>In progress</h3>
+    <div *ngFor="let task of filterByStatus(tasks$ | async, 'IN PROGRESS')" class="card">
+      <h4>{{ task.title }}</h4>
+      <p>{{ task.description }}</p>
+      <button (click)="moveTask(task, 'TO DO')">← To Do</button>
+      <button (click)="moveTask(task, 'DONE')">→ Done</button>
+    </div>
+  </div>
+
+  <div class="column">
+    <h3>Done</h3>
+    <div *ngFor="let task of filterByStatus(tasks$ | async, 'DONE')" class="card">
+      <h4>{{ task.title }}</h4>
+      <p>{{ task.description }}</p>
+      <button (click)="moveTask(task, 'IN PROGRESS')">← In Progress</button>
+    </div>
   </div>
 </div>
