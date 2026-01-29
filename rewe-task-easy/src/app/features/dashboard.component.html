@@ -1,5 +1,9 @@
 <h2 class="page-title">Dashboard</h2>
 
+<div style="display:flex" class="top-bar">
+  <button class="logout-btn" (click)="logout()" style="margin-left: auto;">Logout</button>
+</div>
+
 <div class="new-task-form">
   <h3>Add New Task</h3>
   <input type="text" placeholder="Title" [(ngModel)]="newTaskTitle" />
