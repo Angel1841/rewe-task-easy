@@ -7,11 +7,13 @@ import { Observable } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { Router, RouterOutlet } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatInputModule, MatButtonModule, RouterOutlet],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -24,7 +26,8 @@ export class DashboardComponent {
   newTaskDescription = '';
   newTaskStatus: Task['status'] = 'TO DO';
 
-  constructor(private taskService: TaskService) {
+  constructor(private taskService: TaskService, private authService: AuthService,
+    private router: Router) {
     this.tasks$ = this.taskService.getTasks();
   }
 
@@ -85,5 +88,9 @@ tasksSubjectValue(): Task[] {
   const updatedTask: Task = { ...task, status: newStatus };
   this.taskService.updateTask(updatedTask);
 }
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
 }
