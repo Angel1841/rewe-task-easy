@@ -23,6 +23,9 @@
       <ng-container *ngIf="editTaskId !== task.id; else editMode">
         <h4>{{ task.title }}</h4>
         <p class="desc">{{ task.description }}</p>
+        <p>Assigned to:
+        <strong>{{ getUsername(task.assignedUserId) }}</strong>
+        </p>
         <button (click)="enableEdit(task)">Edit</button>
         <button (click)="moveTask(task, 'IN PROGRESS')">→ In Progress</button>
       </ng-container>
@@ -30,6 +33,12 @@
       <ng-template #editMode>
         <input [(ngModel)]="editedTitle" />
         <textarea [(ngModel)]="editedDescription"></textarea>
+
+        <select [(ngModel)]="editedUserId">
+        <option [ngValue]="undefined">Unassigned</option>
+        <option *ngFor="let user of users" [ngValue]="user.id">{{ user.username }}</option>
+        </select>
+
         <button (click)="saveEdit(task)">Save</button>
         <button (click)="cancelEdit()">Cancel</button>
       </ng-template>
@@ -41,6 +50,9 @@
     <div *ngFor="let task of filterByStatus(tasks$ | async, 'IN PROGRESS')" class="card">
       <h4>{{ task.title }}</h4>
       <p>{{ task.description }}</p>
+      <p>Assigned to:
+        <strong>{{ getUsername(task.assignedUserId) }}</strong>
+        </p>
       <button (click)="moveTask(task, 'TO DO')">← To Do</button>
       <button (click)="moveTask(task, 'DONE')">→ Done</button>
     </div>
@@ -51,6 +63,9 @@
     <div *ngFor="let task of filterByStatus(tasks$ | async, 'DONE')" class="card">
       <h4>{{ task.title }}</h4>
       <p>{{ task.description }}</p>
+      <p>Assigned to:
+        <strong>{{ getUsername(task.assignedUserId) }}</strong>
+        </p>
       <button (click)="moveTask(task, 'IN PROGRESS')">← In Progress</button>
     </div>
   </div>

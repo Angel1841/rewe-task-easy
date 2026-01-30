@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { USERS } from '../../core/constants/users.constants';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +26,9 @@ export class DashboardComponent {
   newTaskTitle = '';
   newTaskDescription = '';
   newTaskStatus: Task['status'] = 'TO DO';
+  users = USERS;
+  editedUserId?: number;
+
 
   constructor(private taskService: TaskService, private authService: AuthService,
     private router: Router) {
@@ -37,7 +41,7 @@ export class DashboardComponent {
     return;
   }
   
-  const tasks = this.tasksSubjectValue(); 
+  const tasks = this.tasksSubjectValue();
   const newId = tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
 
   const newTask: Task = {
@@ -64,6 +68,7 @@ tasksSubjectValue(): Task[] {
     this.editTaskId = task.id;
     this.editedTitle = task.title;
     this.editedDescription = task.description || '';
+    this.editedUserId = task.assignedUserId;
   }
 
   saveEdit(task: Task) {
@@ -71,6 +76,7 @@ tasksSubjectValue(): Task[] {
       ...task,
       title: this.editedTitle,
       description: this.editedDescription,
+      assignedUserId: this.editedUserId
     };
     this.taskService.updateTask(updatedTask);
     this.editTaskId = null;
@@ -91,6 +97,10 @@ tasksSubjectValue(): Task[] {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getUsername(userId?: number): string {
+  return USERS.find(u => u.id === userId)?.username ?? 'Unassigned';
   }
 
 }
